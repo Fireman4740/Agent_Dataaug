@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "augmentor-cli"
+version = "0.1.0"
+description = "CLI tool to balance & augment prompt datasets via a LangGraph-style multi-agent workflow."
+authors = [{name = "Your Name", email = "you@example.com"}]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.2",
+  "scikit-learn>=1.4",
+  "umap-learn>=0.5.6",
+  "hdbscan>=0.8.38",
+  "sentence-transformers>=2.7",
+  "aiohttp>=3.9",
+  "tenacity>=8.2",
+  "loguru>=0.7",
+  "pyyaml>=6.0",
+  "datasketch>=1.5.9",
+  "langgraph>=0.2.0",
+  "python-dotenv>=1.0",
+  "tqdm>=4.66",
+  "matplotlib>=3.8",
+]
+
+[project.urls]
+Homepage = "https://example.com"
+
+[project.scripts]
+augmentor-cli = "augmentor.main:main"
+
+[tool.pytest.ini_options]
+addopts = "-q"

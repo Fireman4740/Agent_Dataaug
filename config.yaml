@@ -1,0 +1,21 @@
+openrouter:
+  api_key_env: OPENROUTER_API_KEY
+  models:
+    creative:
+      ["mistralai/mistral-small-24b-instruct-2501", "openai/gpt-oss-120b"]
+    analysis: ["mistralai/mistral-small-24b-instruct-2501"]
+
+# Génération et contrôle qualité
+generation:
+  target_coverage: 50 # % des besoins couverts (échelle des quotas)
+  max_new_per_class: 2000 # plafond par classe
+  similarity_threshold: 0.72 # borne min pour paraphrases (cosine)
+  max_similarity: 0.95 # borne max pour éviter les copies quasi exactes
+  diversity_temperature: 0.9 # température LLM pour diversité
+  max_brainstorm_ratio: 0.10 # brainstorming ≤ 20% du total planifié
+  examples_per_class: 3 # few-shot par classe (réservé évolutions)
+
+# Limitation de débit et parallélisme
+rate_limit:
+  max_calls_per_minute: 3000 # limite globale estimée
+  max_concurrency: 15 # nombre de requêtes simultanées
