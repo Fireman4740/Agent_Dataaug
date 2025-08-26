@@ -54,7 +54,11 @@ rate_limit:
 ## Données d’entrée/sortie
 
 - Entrée: `intent_mapped_with_elo.jsonl` (lignes JSON: `prompt`, `dataset`, `intent_disc`, `intent_cont`)
-- Sorties: `augmented.jsonl`, `report.md`, `logs/run_<timestamp>.log`
+- Sorties: 
+  - `augmented.jsonl` (uniquement les nouvelles générations)
+  - `combined.jsonl` (dataset original + nouvelles générations, dédupliqué sur `prompt` insensible à la casse)
+  - `report.md`
+  - `logs/run_<timestamp>.log`
 
 ## Exécution
 
@@ -63,6 +67,20 @@ augmentor-cli --config config.yaml --input intent_mapped_with_elo.jsonl --new-ru
 # ou
 python -m augmentor.main --config config.yaml --input intent_mapped_with_elo.jsonl --new-runs 1 --verbose
 ```
+
+### Arguments CLI
+
+| Argument | Défaut | Description |
+|----------|--------|-------------|
+| `--config <path>` | (auto) | Chemin du fichier YAML de configuration. S'il est omis, le chargeur tente `config.yaml` à la racine. |
+| `--input <path>` | `intent_mapped_with_elo.jsonl` | Fichier d'entrée (JSON Lines) contenant les prompts d'origine. |
+| `--verbose` | faux | Active un niveau de log détaillé (DEBUG). Sans ce flag: logs plus concis (INFO). |
+| `--new-runs <n>` | `1` | Nombre de ré-exécutions complètes du workflow; les sorties sont concaténées puis fusionnées (dédup simples) dans `augmented.jsonl` et `combined.jsonl`. |
+
+Notes:
+- Code de sortie: 0 si les quality gates passent, 1 sinon.
+- Les exécutions multiples (`--new-runs > 1`) permettent d'augmenter la diversité; surveillez néanmoins les métriques de similarité et de duplication dans `report.md`.
+- Les variables d'environnement (ex: `OPENROUTER_API_KEY`) peuvent être chargées via un fichier `.env`.
 
 Code de retour 0 si les quality gates passent:
 

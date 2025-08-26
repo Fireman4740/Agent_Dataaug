@@ -59,6 +59,42 @@ async def main_async():
     with open(out_dir / "report.md", "w") as f:
         f.write(report)
 
+    # Combine original + augmented into a single dataset (dedup on prompt)
+    try:
+        import json
+        base_path = Path(args.input)
+        base_rows = []
+        if base_path.exists():
+            with open(base_path, "r") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        base_rows.append(json.loads(line))
+                    except Exception:
+                        logger.warning(f"Ligne invalide ignorée dans {args.input} : {line[:80]}")
+        else:
+            logger.warning(f"Fichier d'entrée introuvable pour combinaison: {args.input}")
+
+        # Construire un index de prompts existants pour éviter doublons simples
+        seen = set()
+        combined = []
+        for r in base_rows + augmented:
+            p = r.get("prompt")
+            key = p.strip().lower() if isinstance(p, str) else p
+            if key in seen:
+                continue
+            seen.add(key)
+            combined.append(r)
+
+        with open(out_dir / "combined.jsonl", "w") as f:
+            for row in combined:
+                f.write(json.dumps(row, ensure_ascii=False) + "\n")
+        logger.info(f"Jeu de données combiné écrit: combined.jsonl (total={len(combined)})")
+    except Exception as e:
+        logger.error(f"Echec écriture combined.jsonl: {e}")
+
     # Distribution plot des prompts générés en fonction de intent_cont
     try:
         import pandas as pd

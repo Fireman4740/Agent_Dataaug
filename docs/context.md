@@ -16,6 +16,7 @@ Copy
 • Output files
 
 augmented.jsonl – only the newly generated prompts.
+combined.jsonl – merge of original input + augmented (simple prompt-level dedup, case‑insensitive).
 report.md – coverage statistics, class histograms, quality metrics, and a chronological log of agent actions.
 Log directory: logs/run_<timestamp>.log.
 3. Runtime Configuration
@@ -62,7 +63,7 @@ Generator Agents      Quality Control Agents
    │                           │
    └───────────────merge───────┘
                │
-        Sink: `augmented.jsonl`
+  Sink: `augmented.jsonl` (+ write `combined.jsonl` helper)
 5. Agent Responsibilities
 Dataset-Analyzer
 • Compute class counts, lexical diversity, n-gram entropy, cluster prompts with UMAP + HDBSCAN.
